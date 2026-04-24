@@ -1,0 +1,52 @@
+# Environment
+.env
+.venv/
+venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Freqtrade data
+user_data/data/
+user_data/logs/
+user_data/backtest_results/
+user_data/plot/
+*.sqlite
+
+# Trade memory
+user_data/trade_memory.db
+user_data/rss_seen.json
+
+# Sentiment model cache
+model_cache/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Secrets
+*.pem
+*.key
+
+# SQLite WAL files
+*.sqlite-shm
+*.sqlite-wal
+
+# Pytest cache
+.pytest_cache/
+
+# Smoke test logs
+smoke_*.log
