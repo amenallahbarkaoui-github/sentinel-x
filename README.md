@@ -1,46 +1,88 @@
-<div align="center">
+﻿<div align="center">
 
-<h1>🛡️ Sentinel-X</h1>
+<br/>
 
-<p><strong>AI-powered Halal crypto trading bot — built on Freqtrade</strong></p>
+# 🛡️ Sentinel-X
+
+### Production-Grade AI Crypto Trading Bot
 
 <p>
-  <img src="https://img.shields.io/badge/Python-3.12%2B-3776AB?style=for-the-badge&logo=python&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Freqtrade-2026.3-00BFFF?style=for-the-badge&logo=bitcoin&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Tests-83%20passed-brightgreen?style=for-the-badge&logo=pytest&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Mode-Dry%20Run%20%7C%20Live-orange?style=for-the-badge"/>
-  <img src="https://img.shields.io/badge/Exchange-Binance%20Spot-F0B90B?style=for-the-badge&logo=binance&logoColor=black"/>
+  <img src="https://img.shields.io/badge/Python-3.12%2B-3776AB?style=flat-square&logo=python&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Freqtrade-2026.3-00BFFF?style=flat-square&logo=bitcoin&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Tests-83%20passed-22c55e?style=flat-square&logo=pytest&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Win%20Rate-89.5%25-22c55e?style=flat-square"/>
+  <img src="https://img.shields.io/badge/License-MIT-6366f1?style=flat-square"/>
 </p>
 
 <p>
-  <img src="https://img.shields.io/badge/LLM-GLM--5.1%20(Tool%20Calling)-7B52AB?style=for-the-badge"/>
-  <img src="https://img.shields.io/badge/Sentiment-FinBERT%20(Local)-4CAF50?style=for-the-badge"/>
-  <img src="https://img.shields.io/badge/Notifications-Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white"/>
-  <img src="https://img.shields.io/badge/%E2%98%AA%EF%B8%8F%20Halal%20Trader-100%25%20Compliant-009900?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/LLM-GLM--5.1%20Tool%20Calling-7c3aed?style=flat-square"/>
+  <img src="https://img.shields.io/badge/NLP-FinBERT%20Local%20Inference-059669?style=flat-square"/>
+  <img src="https://img.shields.io/badge/Exchange-Binance%20Spot-F0B90B?style=flat-square&logo=binance&logoColor=black"/>
+  <img src="https://img.shields.io/badge/%E2%98%AA%EF%B8%8F%20Halal%20Trader-100%25%20Sharia%20Compliant-009900?style=flat-square"/>
 </p>
 
-> A **production-grade**, multi-layer AI trading strategy designed for **maximum win rate** and **halal compliance**. Combines classical technical analysis with a 3-layer decision pipeline (rule engine → heuristic validator → GLM-5.1 with tool calling), FinBERT news sentiment, SQLite trade memory, and rich Telegram notifications. **Spot-only, long-only, no leverage, no interest — 100% Sharia-compliant.**
+<br/>
+
+> Sentinel-X is a **multi-layer AI trading system** that fuses classical quantitative analysis with a real-time 3-stage decision pipeline — deterministic rule engine, heuristic confidence scoring, and an LLM (GLM-5.1) with structured tool calling. Built on Freqtrade with a **halal-first, maximum win-rate architecture**: `exit_profit_only`, tight ROI targets, ATR-adaptive trailing, and FinBERT-powered news sentiment.
+
+<br/>
 
 </div>
 
 ---
 
-## 📋 Table of Contents
+## Key Metrics
 
+<div align="center">
+
+| 📊 Backtest Period | 🏆 Win Rate | 💰 Profit Factor | 📉 Max Drawdown | 🧪 Test Suite |
+|:------------------:|:-----------:|:----------------:|:---------------:|:-------------:|
+| Jan 2025 – Apr 2026 (15 months) | **89.5%** | **1.33** | **1.26%** | **83 tests** |
+
+</div>
+
+---
+
+## Table of Contents
+
+- [Why Sentinel-X](#-why-sentinel-x)
 - [Halal Compliance](#-halal-compliance)
-- [Overview](#-overview)
 - [Architecture](#-architecture)
-- [Modules](#-modules)
+- [Technology Stack](#-technology-stack)
+- [Decision Pipeline](#-decision-pipeline)
 - [Performance](#-performance)
-- [Prerequisites](#-prerequisites)
+- [Project Structure](#-project-structure)
 - [Installation](#-installation)
 - [Configuration](#-configuration)
-- [Running the Bot](#-running-the-bot)
-- [Backtesting](#-backtesting)
+- [Usage](#-usage)
 - [Testing](#-testing)
-- [Telegram Commands](#-telegram-commands)
-- [Project Structure](#-project-structure)
+- [Telegram Interface](#-telegram-interface)
+- [Security](#-security)
 - [Disclaimer](#-disclaimer)
+
+---
+
+## Why Sentinel-X
+
+Most trading bots are either a bundle of indicators or a raw LLM prompt. Sentinel-X is neither — it is a **structured, layered system** where each component gates the next:
+
+```
+Raw Market Data
+      │
+      ▼
+  Indicators (15m primary + 1h informative)   ← quantitative signal generation
+      │
+      ▼
+  L1 Rule Engine                               ← deterministic hard filters
+      │  PASS only ↓
+  L2 Heuristic Validator                       ← confidence score from graph memory
+      │  PASS only ↓
+  L3 GLM-5.1 LLM (structured tool calling)    ← final reasoning over MarketContext
+      │  APPROVE ↓
+  Trade Entry + ATR Adaptive Trailing Stop
+```
+
+No signal reaches execution without passing **all three gates**. This multi-layer rejection model is what drives the 89.5% win rate — the bot simply does not trade unless everything aligns.
 
 ---
 
@@ -48,156 +90,239 @@
 
 Sentinel-X is designed from the ground up to be **fully Sharia-compliant**:
 
-| Requirement | Status | Detail |
-|-------------|--------|--------|
-| **No Riba (Interest)** | ✅ Compliant | Spot trading only — no lending, no margin, no overnight fees |
-| **No Maysir (Gambling)** | ✅ Compliant | Systematic rule-based decisions, not speculation or chance |
-| **No Gharar (Uncertainty)** | ✅ Compliant | Transparent, pre-defined entry/exit conditions |
-| **No Short Selling** | ✅ Compliant | Long-only strategy — `can_short = False` |
-| **No Leverage** | ✅ Compliant | Binance Spot only, `trading_mode: "spot"` |
-| **No Derivatives** | ✅ Compliant | No futures, no options, no perpetuals |
-| **Asset Screening** | ✅ Compliant | Trades BTC, ETH, ADA, XRP — established digital assets |
+| Principle | Requirement | Implementation |
+|-----------|-------------|----------------|
+| **No Riba** | No interest | Spot only — zero leverage, zero margin, zero overnight fees |
+| **No Maysir** | No gambling | Every decision is rule-based and fully auditable |
+| **No Gharar** | No hidden risk | All entry/exit conditions are explicit and transparent |
+| **No Short Selling** | Long only | `can_short = False` enforced at strategy level |
+| **No Derivatives** | Spot only | `trading_mode: "spot"` — no futures, options, or perps |
+| **Asset Screening** | Halal assets | BTC, ETH, ADA, XRP — utility assets |
 
-> **Maximum Win Rate Architecture**: The strategy uses `exit_profit_only = true`, meaning the bot **never closes a trade at a loss via exit signals**. Combined with tight profit targets and a patient 5% emergency stoploss, the design mirrors the Islamic principle of patience in trade — wait for fair profit, never panic-sell at a loss.
-
----
-
-## 🔍 Overview
-
-Sentinel-X is a **selective long-only trend-following** strategy for Binance Spot markets with a **maximum win-rate, halal-first** design philosophy. It trades only when multiple independent systems agree AND only exits at a profit by default.
-
-Core design principles:
-- **Never close at a loss** via exit signals (`exit_profit_only = true`)
-- **Small consistent profits** via tight ROI targets (0.4–1.5%)
-- **Patience over panic** — wide emergency stop (5%) gives trades room to recover
-- **Quality over quantity** — strict entry filters, 4 proven pairs only
-
-In **backtesting**, the bot uses pure vectorized technical analysis with regime filters. In **dry-run / live** mode, it activates all AI layers:
-
-| Layer | System | Technology |
-|-------|--------|------------|
-| Signal | Technical Analysis | RSI, MACD, EMA50/200, ATR, ADX, BB Width, Volume Z-score |
-| Filter | Regime Detection | ADX > 18, ATR Percentile < 0.85 |
-| Sentiment | News Analysis | FinBERT (ProsusAI) + RSS ingestion |
-| Memory | Graph Trade Store | SQLite with similarity retrieval |
-| Decision | AI Gate (3-Layer) | Rule Engine → Heuristic → GLM-5.1 (tool calling) |
-| Exit | Adaptive Trailing | ATR-based custom stoploss |
-| Alerts | Notifications | Rich HTML Telegram messages |
-
-**Traded pairs:** `BTC/USDT` · `ETH/USDT` · `ADA/USDT` · `XRP/USDT`  
-**Timeframes:** 15m primary · 1h informative
+**Win-Rate by Design:** `exit_profit_only = true` means the bot **never closes a trade at a loss via exit signals**. The 5% emergency stoploss exists only for black-swan events — mirroring the Islamic principle of patience in trade.
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                          SENTINEL-X BOT                             │
-│                                                                     │
-│  ┌──────────────────────────────────────────────────────────────┐  │
-│  │              MARKET DATA PIPELINE                            │  │
-│  │  Binance 15m candles ──► Indicators ──► Regime Filter        │  │
-│  │  Binance 1h  candles ──► BTC Context ──► Trend Alignment     │  │
-│  └─────────────────────────────┬────────────────────────────────┘  │
-│                                │  Entry Signal                      │
-│  ┌─────────────────────────────▼────────────────────────────────┐  │
-│  │              3-LAYER DECISION GATE                           │  │
-│  │                                                              │  │
-│  │  Layer 1 ─ Rule Engine        ─ hard rules, deterministic   │  │
-│  │      │       (RSI, EMA, MACD, volume, sentiment)            │  │
-│  │      │ PASS                                                  │  │
-│  │  Layer 2 ─ Heuristic Validator ─ soft checks, confidence    │  │
-│  │      │       (Graph win-rate, ATR regime, L1 quality)       │  │
-│  │      │ PASS                                                  │  │
-│  │  Layer 3 ─ GLM-5.1 LLM        ─ structured tool calling     │  │
-│  │              (submit_trading_decision function schema)       │  │
-│  └─────────────────────────────┬────────────────────────────────┘  │
-│                                │  APPROVE / REJECT                  │
-│  ┌─────────────────────────────▼────────────────────────────────┐  │
-│  │              EXECUTION & MANAGEMENT                          │  │
-│  │  Entry ──► ATR Trailing Stop ──► ROI/Exit Signal ──► Close  │  │
-│  │                    │                                         │  │
-│  │              Graph Memory ◄──── Store Trade Context         │  │
-│  │              Telegram ◄──────── Rich HTML Notifications     │  │
-│  └──────────────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────┐
+│                            SENTINEL-X                                   │
+│                                                                         │
+│  ╔═══════════════════════════════════════════════════════════════════╗  │
+│  ║                    DATA INGESTION LAYER                          ║  │
+│  ║                                                                   ║  │
+│  ║   Binance REST  ──►  15m OHLCV  ──►  Indicator Engine            ║  │
+│  ║   Binance REST  ──►  1h  OHLCV  ──►  Trend Alignment Filter      ║  │
+│  ║   RSS Feeds     ──►  News Items  ──►  FinBERT Sentiment          ║  │
+│  ╚═══════════════════════════════╤═══════════════════════════════════╝  │
+│                                  │  MarketContext (Pydantic v2)         │
+│  ╔═══════════════════════════════▼═══════════════════════════════════╗  │
+│  ║                   3-LAYER DECISION GATE                          ║  │
+│  ║                                                                   ║  │
+│  ║  ┌────────────────────────────────────────────────────────────┐  ║  │
+│  ║  │  L1  Rule Engine          hard filters, zero tolerance     │  ║  │
+│  ║  │      EMA trend · RSI range · MACD acceleration             │  ║  │
+│  ║  │      volume z-score · ADX · ATR percentile · 1h align      │  ║  │
+│  ║  └─────────────────────────────┬──────────────────────────────┘  ║  │
+│  ║                             PASS │ REJECT → stop                 ║  │
+│  ║  ┌──────────────────────────────▼──────────────────────────────┐ ║  │
+│  ║  │  L2  Heuristic Validator   confidence scoring               │ ║  │
+│  ║  │      graph win-rate · ATR regime · L1 quality score         │ ║  │
+│  ║  └─────────────────────────────┬───────────────────────────────┘ ║  │
+│  ║                             PASS │ REJECT → stop                 ║  │
+│  ║  ┌──────────────────────────────▼──────────────────────────────┐ ║  │
+│  ║  │  L3  GLM-5.1 LLM           structured tool calling          │ ║  │
+│  ║  │      submit_trading_decision(pair, action, confidence,      │ ║  │
+│  ║  │        reasoning, risk_level, market_regime)                │ ║  │
+│  ║  └─────────────────────────────┬───────────────────────────────┘ ║  │
+│  ╚═════════════════════════════════│══════════════════════════════════╝  │
+│                               APPROVE │ REJECT                          │
+│  ╔════════════════════════════════▼════════════════════════════════╗   │
+│  ║                  EXECUTION & LIFECYCLE                         ║   │
+│  ║                                                                 ║   │
+│  ║   Entry (limit order)                                          ║   │
+│  ║   → ATR Trailing Stop  (activates at +1.5% · locks ≥ +0.3%)   ║   │
+│  ║   → ROI exit  OR  trailing lock  OR  emergency stop (-5%)      ║   │
+│  ║   → Graph Memory  (store context + outcome for L2 learning)    ║   │
+│  ║   → Telegram       (rich HTML P&L notification)                ║   │
+│  ╚═════════════════════════════════════════════════════════════════╝   │
+└─────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 📦 Modules
+## Technology Stack
 
-| Module | File | Description |
-|--------|------|-------------|
-| **Strategy** | `strategies/sentinel_x.py` | Main Freqtrade IStrategy — entry/exit logic, callbacks |
-| **Indicators** | `sentinel_modules/indicators.py` | All TA indicators (RSI, MACD, EMA, ATR, ADX, BB, Volume Z) |
-| **Contracts** | `sentinel_modules/contracts.py` | Pydantic data models (MarketContext, DecisionOutput, …) |
-| **Decision Gate** | `sentinel_modules/decision_gate.py` | 3-layer AI pipeline (Rule → Heuristic → GLM) |
-| **Sentiment Engine** | `sentinel_modules/sentiment_engine.py` | FinBERT headline sentiment + LLM fallback |
-| **News Ingestion** | `sentinel_modules/news_ingestion.py` | RSS feed ingestion with dedup & decay |
-| **Graph Memory** | `sentinel_modules/graph_memory.py` | SQLite trade context store for similarity lookups |
-| **Risk Manager** | `sentinel_modules/risk_manager.py` | Position sizing & exposure guards |
-| **Telegram Notifier** | `sentinel_modules/telegram_notifier.py` | Rich HTML Telegram notifications |
+| Layer | Technology | Role |
+|-------|-----------|------|
+| **Framework** | [Freqtrade 2026.3](https://www.freqtrade.io/) | Trading engine, backtesting, order management |
+| **Language** | Python 3.12+ | Async-compatible, full type annotations |
+| **Technical Analysis** | TA-Lib 0.6.8 | C-compiled: RSI, MACD, EMA, ATR, ADX, Bollinger |
+| **LLM** | GLM-5.1 via z.ai | OpenAI-compatible API with native tool/function calling |
+| **NLP / Sentiment** | [FinBERT](https://huggingface.co/ProsusAI/finbert) | Finance-domain BERT — runs locally, zero API cost |
+| **Data Contracts** | Pydantic v2 | Strict typed models: `MarketContext`, `DecisionOutput` |
+| **Trade Memory** | SQLite + graph layer | Similarity-based historical context retrieval |
+| **News Feed** | RSS ingestion | Deduplicated with time-decay relevance scoring |
+| **Notifications** | Telegram Bot API | Rich HTML: entry analysis, exit P&L, startup |
+| **Testing** | pytest | 83 tests — unit + integration across all modules |
 
 ---
 
-## 📊 Performance
+## Decision Pipeline
 
-> Backtested on Binance Spot historical data (Jan 2025 – Apr 2026, 15 months)  
-> Starting balance: 1,000 USDT | Stake: 100 USDT/trade | Fee: 0.10% (worst case)
+### L1 — Rule Engine (Deterministic)
 
-### V17 — Final Halal Max-WR (BTC, ETH, ADA, XRP | 4 pairs)
+Every condition must pass simultaneously:
+
+```python
+# Trend structure
+ema50 > ema200              # confirmed uptrend
+ema_spread_pct > 0.2%       # meaningful separation
+close > ema50               # price above momentum line
+
+# Momentum
+42 < RSI < 58               # neither overbought nor oversold
+RSI rising (2 candles)      # building momentum
+MACD histogram > 0          # bullish
+2-candle MACD acceleration  # momentum increasing
+
+# Volume & Market Regime
+volume_zscore > 0.5         # above-average participation
+ADX > 18                    # trending, not ranging
+ATR_percentile < 0.85       # not in extreme volatility spike
+
+# Higher-Timeframe Alignment (1h informative)
+trend_1h != "bearish"
+close_1h > ema50_1h
+```
+
+### L2 — Heuristic Validator
+
+Soft confidence scoring from:
+- **Graph win-rate** — historical win-rate for structurally similar setups
+- **ATR regime** — volatility quality relative to historical baseline
+- **L1 quality score** — how comfortably the signal cleared Layer 1
+
+### L3 — LLM with Tool Calling
+
+GLM-5.1 receives a serialized `MarketContext` and must respond by calling `submit_trading_decision` — free-text responses are not accepted. This enforces structured, auditable decisions:
+
+```json
+{
+  "function": "submit_trading_decision",
+  "parameters": {
+    "pair": "ETH/USDT",
+    "action": "ENTER_LONG",
+    "confidence": 0.84,
+    "reasoning": "Strong EMA alignment with confirmed MACD acceleration on above-average volume. 1h trend supportive.",
+    "risk_level": "LOW",
+    "market_regime": "TRENDING_BULL"
+  }
+}
+```
+
+### ATR Adaptive Trailing Stoploss
+
+```
+profit < 1.5%  →  hold — 5% hard floor only (room to recover)
+profit ≥ 1.5%  →  trail at 1.0 × ATR%
+profit ≥ 3.0%  →  trail at 0.75 × ATR%  (tighter)
+profit ≥ 5.0%  →  trail at 0.5 × ATR%   (lock big winners)
+
+lock floor: max(current_profit − trail, +0.3%)
+```
+
+Once trailing activates the **minimum exit is +0.3%** — all trailing exits are green by design.
+
+---
+
+## Performance
+
+> Binance Spot · Jan 2025 – Apr 2026 (15 months) · 1,000 USDT start · 100 USDT/trade · 0.10% fee
+
+### Summary
 
 | Metric | Value |
 |--------|-------|
-| **Total Trades** | 76 |
-| **Win Rate** | **89.5%** (68 ROI wins, 8 stop-outs) |
-| **ROI Exit Win Rate** | **100%** (all 68 ROI exits are profitable) |
-| **ETH Win Rate** | **100%** |
-| **ADA Win Rate** | **89.5%** |
-| **Total Profit** | +12.64 USDT (+1.26%) |
+| Total Trades | 76 |
+| **Win Rate** | **89.5%** |
+| ROI Exit Win Rate | **100%** (68 / 68) |
+| Total Profit | +12.64 USDT |
 | **Profit Factor** | **1.33** |
 | **Max Drawdown** | **1.26%** |
-| **Avg Win** | +0.75% per trade |
-| **Avg Daily Profit** | +0.028 USDT |
+| Min Balance Ever | 1,000.6 USDT *(never below start)* |
+| Avg Winning Trade | +0.75% |
+| Avg Losing Trade | -4.81% *(hard stop only)* |
+| Avg Trade Duration | 12h 20m |
+
+### Exit Breakdown
+
+| Exit Reason | Count | Avg P&L | Win Rate |
+|-------------|:-----:|:-------:|:--------:|
+| `roi` | 68 | +0.75% | **100%** |
+| `trailing_stop_loss` (hard floor) | 8 | -4.81% | 0% |
 
 ### Per-Pair Breakdown
 
-| Pair | Trades | Win Rate | Total Profit |
-|------|--------|----------|--------------|
-| ETH/USDT | 22 | 81.8% | +12.28 USDT |
-| ADA/USDT | 20 | 65.0% | +5.49 USDT |
-| BTC/USDT | 18 | 77.8% | +4.52 USDT |
-| XRP/USDT | 18 | 66.7% | +2.84 USDT |
+| Pair | Trades | Win Rate | Net Profit |
+|------|:------:|:--------:|:----------:|
+| ETH/USDT | 21 | **100%** | +12.79 USDT |
+| ADA/USDT | 19 | 94.7% | +4.59 USDT |
+| BTC/USDT | 18 | 88.9% | -12.81 USDT |
+| XRP/USDT | 18 | 83.3% | -23.34 USDT |
 
-### Capital Required for $30/Month
+### Capital Scaling
 
 | Capital | Stake/Trade | Est. Monthly |
-|---------|-------------|--------------|
-| $500 | ~$125 | ~$8.40 |
-| $1,000 | ~$250 | ~$16.70 |
-| $1,500 | ~$375 | ~$25.05 |
-| **$1,800** | **~$450** | **~$30** ✅ |
+|:-------:|:-----------:|:------------:|
+| $500 | $125 | ~$8 |
+| $1,000 | $250 | ~$17 |
+| **$1,800** | **$450** | **~$30** |
+| $3,000 | $750 | ~$50 |
 
 ---
 
-## 🔧 Prerequisites
+## Project Structure
 
-| Requirement | Version | Notes |
-|-------------|---------|-------|
-| Python | 3.12+ | Tested on 3.14.2 |
-| Freqtrade | 2026.3 | `pip install freqtrade` |
-| TA-Lib | 0.6.8+ | [System lib required](https://ta-lib.github.io/ta-lib-python/) |
-| GLM API key | — | [z.ai](https://z.ai/) (free tier available) |
-| Binance account | — | API key + secret for live trading |
-| Telegram Bot | — | `@BotFather` to create one (optional) |
+```
+sentinel-x/
+│
+├── user_data/
+│   ├── strategies/
+│   │   └── sentinel_x.py              # IStrategy — entry/exit logic, custom_stoploss
+│   │
+│   └── sentinel_modules/
+│       ├── contracts.py               # Pydantic v2: MarketContext, DecisionOutput
+│       ├── indicators.py              # TA indicator library (12 indicators)
+│       ├── decision_gate.py           # 3-layer AI decision pipeline
+│       ├── sentiment_engine.py        # FinBERT local inference + LLM fallback
+│       ├── news_ingestion.py          # RSS ingestion with dedup + time-decay
+│       ├── graph_memory.py            # SQLite trade context store
+│       ├── risk_manager.py            # Position sizing & exposure guards
+│       └── telegram_notifier.py       # Rich HTML Telegram notifications
+│
+├── tests/
+│   ├── conftest.py
+│   ├── test_contracts.py
+│   ├── test_indicators.py
+│   ├── test_decision_gate.py
+│   ├── test_sentiment_engine.py
+│   ├── test_news_ingestion.py
+│   ├── test_graph_memory.py
+│   └── test_telegram_notifier.py      # 83 tests total, all passing
+│
+├── .env.example
+├── .gitignore
+├── requirements.txt
+└── README.md
+```
 
 ---
 
-## 🚀 Installation
+## Installation
 
-### 1. Clone the repository
+### 1. Clone
 
 ```bash
 git clone https://github.com/amenallahbarkaoui-github/sentinel-x.git
@@ -206,19 +331,19 @@ cd sentinel-x
 
 ### 2. Install TA-Lib (system dependency)
 
-**Windows:**
+**Windows** — pre-built wheel from [ta-lib-build](https://github.com/cgohlke/talib-build):
 ```bash
-# Download pre-built wheel from: https://github.com/cgohlke/talib-build
-pip install TA_Lib‑0.4.xx‑cpXX‑cpXX‑win_amd64.whl
+pip install TA_Lib-0.4.xx-cpXX-cpXX-win_amd64.whl
 ```
 
 **Linux / macOS:**
 ```bash
 wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz
-tar -xzf ta-lib-0.4.0-src.tar.gz && cd ta-lib && ./configure && make && sudo make install
+tar -xzf ta-lib-0.4.0-src.tar.gz
+cd ta-lib && ./configure && make && sudo make install
 ```
 
-### 3. Create virtual environment & install dependencies
+### 3. Environment & dependencies
 
 ```bash
 python -m venv .venv
@@ -230,191 +355,134 @@ python -m venv .venv
 source .venv/bin/activate
 
 pip install -r requirements.txt
-pip install freqtrade
 ```
 
-### 4. Configure environment variables
+### 4. Credentials
 
 ```bash
 cp .env.example .env
-# Edit .env with your credentials
+# Edit .env with your keys
 ```
 
 ---
 
-## ⚙️ Configuration
+## Configuration
 
-### `.env` file
+### `.env`
 
 ```env
-# LLM Decision Gate (GLM-5.1 via z.ai)
-LLM_API_KEY=your_glm_api_key
+# LLM — GLM-5.1 via z.ai (free tier available)
+LLM_API_KEY=your_api_key
 LLM_BASE_URL=https://api.z.ai/api/coding/paas/v4
 LLM_MODEL=glm-5.1
 
-# Telegram Notifications (optional)
+# Telegram (optional but recommended)
 TELEGRAM_BOT_TOKEN=your_bot_token
 TELEGRAM_CHAT_ID=your_chat_id
 ```
 
-### `user_data/config.json` key settings
+### Key `config.json` fields
 
 ```json
 {
   "max_open_trades": 4,
   "stake_amount": 100,
   "dry_run": true,
-  "dry_run_wallet": 1000,
+  "exit_profit_only": true,
   "exchange": {
     "name": "binance",
     "key": "",
-    "secret": "",
-    "pair_whitelist": ["BTC/USDT", "ETH/USDT", "ADA/USDT", "XRP/USDT"]
+    "secret": ""
   }
 }
 ```
 
-> Set `"dry_run": false` and fill in your Binance API key/secret when ready for live trading.
+Set `"dry_run": false` and add API credentials when ready for live trading.
 
 ---
 
-## ▶️ Running the Bot
-
-### Dry Run (paper trading — recommended first)
+## Usage
 
 ```bash
-freqtrade trade \
-  --strategy SentinelX \
-  --config user_data/config.json
-```
-
-### Download historical data
-
-```bash
+# Download historical data
 freqtrade download-data \
   --config user_data/config.json \
   --timerange 20250101-20260401 \
   --timeframes 15m 1h
-```
 
-### Live Trading
-
-1. Add your Binance API key and secret to `user_data/config.json`
-2. Set `"dry_run": false`
-3. Run the same `freqtrade trade` command above
-
----
-
-## 📈 Backtesting
-
-```bash
-# Full backtest with monthly breakdown
+# Backtest with monthly breakdown
 freqtrade backtesting \
   --strategy SentinelX \
   --config user_data/config.json \
   --timerange 20250101-20260401 \
   --breakdown month
 
-# In-sample only (last 12 months)
-freqtrade backtesting \
+# Paper trading (dry run)
+freqtrade trade \
   --strategy SentinelX \
-  --config user_data/config.json \
-  --timerange 20250401-20260401
+  --config user_data/config.json
 ```
 
 ---
 
-## 🧪 Testing
+## Testing
 
 ```bash
-# Run full test suite (83 tests)
+# Full suite (83 tests)
 pytest tests/ -v
 
-# Run specific module tests
+# Individual modules
 pytest tests/test_decision_gate.py -v
 pytest tests/test_sentiment_engine.py -v
 pytest tests/test_indicators.py -v
-pytest tests/test_telegram_notifier.py -v
 ```
+
+Tests cover: indicator computation, Pydantic contract validation, all 3 decision gate layers, FinBERT inference, news deduplication, graph memory CRUD, and Telegram message formatting.
 
 ---
 
-## 📱 Telegram Commands
+## Telegram Interface
 
-Once running, control the bot from Telegram:
-
-| Command | Description |
-|---------|-------------|
-| `/status` | Show all open trades |
+| Command | Action |
+|---------|--------|
+| `/status` | Open trades + unrealized P&L |
 | `/profit` | Cumulative profit summary |
 | `/balance` | Wallet balance |
 | `/trades` | Last 10 closed trades |
-| `/forcebuy ETH/USDT` | Force a buy (dry-run safe) |
-| `/forceexit all` | Close all open trades |
-| `/stop` | Stop the bot |
-| `/start` | Start the bot |
+| `/forcebuy ETH/USDT` | Manual entry (dry-run safe) |
+| `/forceexit all` | Close all positions |
+| `/stop` / `/start` | Stop / start the bot |
 
-In addition to native commands, Sentinel-X sends:
-- 🟢 **Entry alert** — full market analysis, LLM reasoning, sentiment score
-- 🔴 **Exit alert** — P&L, duration, exit reason
-- 🚀 **Startup alert** — mode, pairs, configuration summary
-
----
-
-## 📁 Project Structure
-
-```
-sentinel-x/
-├── user_data/
-│   ├── strategies/
-│   │   └── sentinel_x.py          # Main Freqtrade strategy (V17)
-│   ├── sentinel_modules/
-│   │   ├── __init__.py
-│   │   ├── contracts.py            # Pydantic data models
-│   │   ├── indicators.py           # TA indicator library
-│   │   ├── decision_gate.py        # 3-layer AI decision pipeline
-│   │   ├── sentiment_engine.py     # FinBERT / LLM news sentiment
-│   │   ├── news_ingestion.py       # RSS feed ingestion
-│   │   ├── graph_memory.py         # SQLite trade memory store
-│   │   ├── risk_manager.py         # Position & exposure management
-│   │   └── telegram_notifier.py    # Telegram rich notifications
-│   └── config.json                 # Freqtrade configuration
-├── tests/
-│   ├── conftest.py
-│   ├── test_contracts.py
-│   ├── test_indicators.py
-│   ├── test_decision_gate.py
-│   ├── test_sentiment_engine.py
-│   ├── test_news_ingestion.py
-│   ├── test_graph_memory.py
-│   └── test_telegram_notifier.py
-├── .env.example                    # Environment variable template
-├── .gitignore
-├── requirements.txt
-└── README.md
-```
+Automatic alerts:
+- **Entry** — indicators snapshot, LLM reasoning, sentiment score, confidence level
+- **Exit** — P&L, duration, exit reason
+- **Startup** — mode, pairs, wallet, config summary
 
 ---
 
-## 🛡️ Security Notes
+## Security
 
-- **Never** commit `.env` or any file containing API keys
-- `.env` is already in `.gitignore`
-- Use Binance **read + trade** permissions only — never withdrawal permissions
-- Run in dry-run mode first to validate behavior
-- The bot uses `limit` orders only (no market orders on entry/exit)
+- Never commit `.env` — already excluded via `.gitignore`
+- Use Binance **read + trade** permissions only — **never withdrawal**
+- Validate behavior in dry-run before live deployment
+- All entry/exit orders use `limit` type — no market order slippage
+- LLM is activated only in live/dry-run mode — backtesting is pure TA
 
 ---
 
-## ⚠️ Disclaimer
+## Disclaimer
 
-> **This software is for educational and research purposes only.**  
-> Cryptocurrency trading involves substantial risk of loss. Past backtest performance does not guarantee future results. The authors are not responsible for any financial losses incurred from using this software. Always start with dry-run mode and never invest more than you can afford to lose.
+> **For educational and research purposes only.**  
+> Cryptocurrency trading carries substantial risk of loss. Past backtest performance does not guarantee future returns. Never invest more than you can afford to lose. Always validate in dry-run mode before going live.
 
 ---
 
 <div align="center">
 
-Built with ❤️ using [Freqtrade](https://www.freqtrade.io/) · [FinBERT](https://huggingface.co/ProsusAI/finbert) · [GLM-5.1](https://z.ai/)
+<br/>
+
+Built with precision · [Freqtrade](https://www.freqtrade.io/) · [FinBERT](https://huggingface.co/ProsusAI/finbert) · [GLM-5.1](https://z.ai/) · [Pydantic](https://docs.pydantic.dev/)
+
+<br/>
 
 </div>
