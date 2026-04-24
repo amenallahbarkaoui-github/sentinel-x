@@ -74,8 +74,8 @@
     "ignore_roi_if_entry_signal": false,
     "telegram": {
         "enabled": true,
-        "token": "YOUR_TELEGRAM_BOT_TOKEN",
-        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
+        "token": "",
+        "chat_id": "",
         "notification_settings": {
             "status": "on",
             "warning": "on",
