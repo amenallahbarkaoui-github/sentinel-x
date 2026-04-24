@@ -10,7 +10,7 @@
   <img src="https://img.shields.io/badge/Python-3.12%2B-3776AB?style=flat-square&logo=python&logoColor=white"/>
   <img src="https://img.shields.io/badge/Freqtrade-2026.3-00BFFF?style=flat-square&logo=bitcoin&logoColor=white"/>
   <img src="https://img.shields.io/badge/Tests-83%20passed-22c55e?style=flat-square&logo=pytest&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Win%20Rate-89.5%25-22c55e?style=flat-square"/>
+  <img src="https://img.shields.io/badge/Win%20Rate-92.3%25-22c55e?style=flat-square"/>
   <img src="https://img.shields.io/badge/License-MIT-6366f1?style=flat-square"/>
 </p>
 
@@ -18,12 +18,12 @@
   <img src="https://img.shields.io/badge/LLM-GLM--5.1%20Tool%20Calling-7c3aed?style=flat-square"/>
   <img src="https://img.shields.io/badge/NLP-FinBERT%20Local%20Inference-059669?style=flat-square"/>
   <img src="https://img.shields.io/badge/Exchange-Binance%20Spot-F0B90B?style=flat-square&logo=binance&logoColor=black"/>
-  <img src="https://img.shields.io/badge/%E2%98%AA%EF%B8%8F%20Halal%20Trader-100%25%20Sharia%20Compliant-009900?style=flat-square"/>
+  <img src="https://img.shields.io/badge/Sharia%20Mode-Spot%20Only%20%7C%20Scholar%20Review-009900?style=flat-square"/>
 </p>
 
 <br/>
 
-> Sentinel-X is a **multi-layer AI trading system** that fuses classical quantitative analysis with a real-time 3-stage decision pipeline — deterministic rule engine, heuristic confidence scoring, and an LLM (GLM-5.1) with structured tool calling. Built on Freqtrade with a **halal-first, maximum win-rate architecture**: `exit_profit_only`, tight ROI targets, ATR-adaptive trailing, and FinBERT-powered news sentiment.
+> Sentinel-X is a **multi-layer AI trading system** that fuses classical quantitative analysis with a real-time 3-stage decision pipeline — deterministic rule engine, heuristic confidence scoring, and an LLM (GLM-5.1) with structured tool calling. Built on Freqtrade with a **conservative spot-only, sharia-oriented architecture**: `exit_profit_only`, tight ROI targets, ATR-adaptive trailing, runtime guards for `spot` and `long-only`, and FinBERT-powered news sentiment.
 
 <br/>
 
@@ -37,7 +37,7 @@
 
 | 📊 Backtest Period | 🏆 Win Rate | 💰 Profit Factor | 📉 Max Drawdown | 🧪 Test Suite |
 |:------------------:|:-----------:|:----------------:|:---------------:|:-------------:|
-| Jan 2025 – Apr 2026 (15 months) | **89.5%** | **1.33** | **1.26%** | **83 tests** |
+| Jan 2025 – Apr 2026 (15 months) | **92.3%** | **1.65** | **0.86%** | **83 tests** |
 
 </div>
 
@@ -46,7 +46,7 @@
 ## Table of Contents
 
 - [Why Sentinel-X](#-why-sentinel-x)
-- [Halal Compliance](#-halal-compliance)
+- [Halal Review](#-halal-review)
 - [Architecture](#-architecture)
 - [Technology Stack](#-technology-stack)
 - [Decision Pipeline](#-decision-pipeline)
@@ -82,13 +82,13 @@ Raw Market Data
   Trade Entry + ATR Adaptive Trailing Stop
 ```
 
-No signal reaches execution without passing **all three gates**. This multi-layer rejection model is what drives the 89.5% win rate — the bot simply does not trade unless everything aligns.
+No signal reaches execution without passing **all three gates**. This multi-layer rejection model is what drives the 92.3% win rate in conservative mode — the bot simply does not trade unless everything aligns.
 
 ---
 
-## ☪️ Halal Compliance
+## ☪️ Halal Review
 
-Sentinel-X is designed from the ground up to be **fully Sharia-compliant**:
+Sentinel-X is designed to enforce **conservative, commonly requested sharia-oriented constraints**, but the repository does **not** self-issue a fatwa or claim universal scholarly certification:
 
 | Principle | Requirement | Implementation |
 |-----------|-------------|----------------|
@@ -97,9 +97,11 @@ Sentinel-X is designed from the ground up to be **fully Sharia-compliant**:
 | **No Gharar** | No hidden risk | All entry/exit conditions are explicit and transparent |
 | **No Short Selling** | Long only | `can_short = False` enforced at strategy level |
 | **No Derivatives** | Spot only | `trading_mode: "spot"` — no futures, options, or perps |
-| **Asset Screening** | Halal assets | BTC, ETH, ADA, XRP — utility assets |
+| **Asset Screening** | Conservative universe | Runtime guard allows only BTC/USDT and ETH/USDT |
 
-**Win-Rate by Design:** `exit_profit_only = true` means the bot **never closes a trade at a loss via exit signals**. The 5% emergency stoploss exists only for black-swan events — mirroring the Islamic principle of patience in trade.
+Runtime guardrails in `SentinelX` now refuse to start if any of the following drift from the conservative profile: `trading_mode != spot`, `margin_mode` is set, `can_short = True`, or the whitelist contains anything other than `BTC/USDT` and `ETH/USDT`.
+
+**Important:** whether crypto itself, stablecoin quotes, or exchange custody are halal is still a matter for your scholar, jurisdiction, and risk policy. The code can enforce conservative constraints; it cannot issue a binding religious ruling.
 
 ---
 
@@ -233,53 +235,42 @@ profit ≥ 5.0%  →  trail at 0.5 × ATR%   (lock big winners)
 lock floor: max(current_profit − trail, +0.3%)
 ```
 
-Once trailing activates the **minimum exit is +0.3%** — all trailing exits are green by design.
+Once trailing activates the **minimum exit is +0.3%**. In Freqtrade reports, `trailing_stop_loss` may still include hard-floor exits emitted by `custom_stoploss`, so the backtest table should be read with that implementation detail in mind.
 
 ---
 
 ## Performance
 
-> Binance Spot · Jan 2025 – Apr 2026 (15 months) · 1,000 USDT start · 100 USDT/trade · 0.10% fee
+> Binance Spot conservative mode (`BTC/USDT`, `ETH/USDT`) · Jan 2025 – Apr 2026 (15 months) · 1,000 USDT start · 100 USDT/trade · 0.10% fee
 
 ### Summary
 
 | Metric | Value |
 |--------|-------|
-| Total Trades | 76 |
-| **Win Rate** | **89.5%** |
-| ROI Exit Win Rate | **100%** (68 / 68) |
-| Total Profit | +12.64 USDT |
-| **Profit Factor** | **1.33** |
-| **Max Drawdown** | **1.26%** |
-| Min Balance Ever | 1,000.6 USDT *(never below start)* |
-| Avg Winning Trade | +0.75% |
-| Avg Losing Trade | -4.81% *(hard stop only)* |
-| Avg Trade Duration | 12h 20m |
+| Total Trades | 39 |
+| **Win Rate** | **92.3%** |
+| ROI Exit Win Rate | **100%** (36 / 36) |
+| Total Profit | +9.163 USDT |
+| **Profit Factor** | **1.65** |
+| **Max Drawdown** | **0.86%** |
+| Min Balance Ever | 996.436 USDT |
+| Avg Winning Trade | +0.65% |
+| Avg Losing Trade | -4.69% *(hard stop only)* |
+| Avg Trade Duration | 12h 50m |
 
 ### Exit Breakdown
 
 | Exit Reason | Count | Avg P&L | Win Rate |
 |-------------|:-----:|:-------:|:--------:|
-| `roi` | 68 | +0.75% | **100%** |
-| `trailing_stop_loss` (hard floor) | 8 | -4.81% | 0% |
+| `roi` | 36 | +0.65% | **100%** |
+| `trailing_stop_loss` *(custom-stop hard floor in practice)* | 3 | -4.69% | 0% |
 
 ### Per-Pair Breakdown
 
 | Pair | Trades | Win Rate | Net Profit |
 |------|:------:|:--------:|:----------:|
 | ETH/USDT | 21 | **100%** | +12.79 USDT |
-| ADA/USDT | 19 | 94.7% | +4.59 USDT |
-| BTC/USDT | 18 | 88.9% | -12.81 USDT |
-| XRP/USDT | 18 | 83.3% | -23.34 USDT |
-
-### Capital Scaling
-
-| Capital | Stake/Trade | Est. Monthly |
-|:-------:|:-----------:|:------------:|
-| $500 | $125 | ~$8 |
-| $1,000 | $250 | ~$17 |
-| **$1,800** | **$450** | **~$30** |
-| $3,000 | $750 | ~$50 |
+| BTC/USDT | 18 | 83.3% | -3.624 USDT |
 
 ---
 
@@ -385,14 +376,15 @@ TELEGRAM_CHAT_ID=your_chat_id
 
 ```json
 {
-  "max_open_trades": 4,
+  "max_open_trades": 2,
   "stake_amount": 100,
   "dry_run": true,
   "exit_profit_only": true,
   "exchange": {
     "name": "binance",
     "key": "",
-    "secret": ""
+    "secret": "",
+    "pair_whitelist": ["BTC/USDT", "ETH/USDT"]
   }
 }
 ```

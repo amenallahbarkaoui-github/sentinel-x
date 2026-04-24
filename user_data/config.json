@@ -2,7 +2,7 @@
     "$schema": "https://schema.freqtrade.io/schema.json",
     "trading_mode": "spot",
     "margin_mode": "",
-    "max_open_trades": 4,
+    "max_open_trades": 2,
     "stake_currency": "USDT",
     "stake_amount": 100,
     "tradable_balance_ratio": 0.99,
@@ -24,9 +24,7 @@
         "ccxt_async_config": {},
         "pair_whitelist": [
             "BTC/USDT",
-            "ETH/USDT",
-            "XRP/USDT",
-            "ADA/USDT"
+            "ETH/USDT"
         ],
         "pair_blacklist": []
     },

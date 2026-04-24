@@ -67,23 +67,23 @@ logger = logging.getLogger(__name__)
 
 class SentinelX(IStrategy):
     """
-    Sentinel-X V17 — Halal-Compliant, Maximum Win-Rate Architecture.
+        Sentinel-X V17 — Conservative Spot-Only Architecture.
 
-    Islamic Finance Compliance (Halal):
-      • Spot trading ONLY — no leverage, no margin, no interest (riba)
-      • Long-only — no short selling
-      • No derivatives, no options, no futures
-      • Systematic rules — not gambling (maysir); defined entry/exit logic
-      • Transparent conditions — no hidden risk (gharar)
+        Conservative Sharia-Oriented Constraints:
+            • Spot trading ONLY — no leverage, no margin, no futures
+            • Long-only — no short selling
+            • Conservative asset universe — BTC and ETH only
+            • Systematic rules — explicit entry/exit logic
+            • Runtime validation — refuse to start if config violates constraints
 
     Win-Rate Maximization Strategy:
       • exit_profit_only = True  → NEVER sell at a loss via exit signals
-      • Aggressive ROI targets   → lock in small profits quickly (0.8–1.5%)
-      • Very wide hard stoploss  → -8% (rare market crashes only)
-      • ATR trailing only above +4% profit → protects big winners only
+            • Tight ROI targets        → lock in small profits quickly (0.4–1.5%)
+            • Hard stoploss            → -5% emergency floor
+            • ATR trailing above +1.5% → locks profit once trend matures
       • Strict entry filters     → only enter high-probability setups
 
-    Result: High win rate (target > 85%), low-but-consistent profit per trade.
+        Note: This code enforces conservative constraints, but it is not a fatwa.
     """
 
     # ══════════════════════════════════════════════════════════════════════
@@ -92,6 +92,7 @@ class SentinelX(IStrategy):
 
     INTERFACE_VERSION = 3
     timeframe = "15m"
+    APPROVED_SHARIA_PAIRS = frozenset({"BTC/USDT", "ETH/USDT"})
 
     # EMA200 needs ~200 candles + buffer for stable values
     startup_candle_count: int = 210
@@ -200,11 +201,11 @@ class SentinelX(IStrategy):
 
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
-        LONG entry conditions — V17 (selective multi-pair).
+        LONG entry conditions — V17 (conservative spot-only universe).
 
-        Same strict V16 filters on 4 proven profitable pairs
-        (ETH, BTC, ADA, XRP). Frequency gained via pair count not
-        filter relaxation — quality preserved.
+        Same strict V16 filters on the conservative BTC/ETH universe.
+        Frequency is intentionally lower to preserve selectivity and keep
+        the asset universe inside the enforced runtime constraints.
         """
         conditions = (
             # ── Mandatory trend structure ──
@@ -271,7 +272,7 @@ class SentinelX(IStrategy):
         **kwargs,
     ) -> float:
         """
-        V17 Halal — ATR adaptive trailing, activates at +1.5% profit.
+                V17 conservative mode — ATR adaptive trailing, activates at +1.5% profit.
 
         Phases:
           profit < 1.5%  → hard stoploss only (-5%) — gives trade room to recover
@@ -279,8 +280,10 @@ class SentinelX(IStrategy):
           profit ≥ 3.0%  → trail at 0.75 × ATR% (tighter)
           profit ≥ 5.0%  → trail at 0.5 × ATR%  (lock big winners)
 
-        Lock floor: min +0.3% once trailing is active — ALL trailing exits
-        close in profit. Only a rare -12% hard stop closes at a loss.
+                Lock floor: min +0.3% once trailing is active.
+                Freqtrade may still label custom-stop exits as trailing_stop_loss,
+                including the hard floor before trailing activation.
+                Only the rare -5% hard stop closes at a loss.
         Combined with exit_profit_only=True (blocks signal exits in loss)
         this achieves maximum win rate.
         """
@@ -301,8 +304,8 @@ class SentinelX(IStrategy):
         else:
             trail = 1.0 * atr_pct    # wide: give room for trend
 
-        # Lock at least 0.3% profit once trailing activates
-        # ALL trailing stop exits are therefore profitable — no loss from trailing
+        # Lock at least 0.3% profit once trailing activates.
+        # Freqtrade may still report the hard floor under trailing_stop_loss.
         lock_pct = max(0.003, current_profit - trail)
         return stoploss_from_open(lock_pct, current_profit, is_short=False)
 
@@ -312,8 +315,40 @@ class SentinelX(IStrategy):
 
     def bot_start(self, **kwargs) -> None:
         """Initialize external modules (only in dry/live)."""
+        self._validate_sharia_constraints()
         if self.dp and self.dp.runmode.value in ("live", "dry_run"):
             self._init_live_modules()
+
+    def _validate_sharia_constraints(self) -> None:
+        """Refuse to run if config drifts outside conservative spot-only constraints."""
+        config = getattr(self, "config", {}) or {}
+        exchange_config = config.get("exchange", {}) or {}
+
+        trading_mode = str(config.get("trading_mode", "")).lower()
+        margin_mode = str(config.get("margin_mode", "") or "").lower()
+        pair_whitelist = exchange_config.get("pair_whitelist") or []
+
+        if trading_mode != "spot":
+            raise ValueError("SentinelX conservative mode requires trading_mode='spot'.")
+
+        if margin_mode:
+            raise ValueError("SentinelX conservative mode forbids margin_mode.")
+
+        if self.can_short:
+            raise ValueError("SentinelX conservative mode forbids short selling.")
+
+        if not pair_whitelist:
+            raise ValueError("SentinelX conservative mode requires an explicit pair_whitelist.")
+
+        invalid_pairs = [
+            pair for pair in pair_whitelist
+            if pair not in self.APPROVED_SHARIA_PAIRS
+        ]
+        if invalid_pairs:
+            raise ValueError(
+                "SentinelX conservative mode allows only BTC/USDT and ETH/USDT. "
+                f"Remove: {', '.join(invalid_pairs)}"
+            )
 
     def _init_live_modules(self) -> None:
         """Lazy-load external modules for dry/live mode."""
