@@ -172,7 +172,7 @@ In **backtesting**, the bot uses pure vectorized technical analysis with regime 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/sentinel-x.git
+git clone https://github.com/amenallahbarkaoui-github/sentinel-x.git
 cd sentinel-x
 ```
 
