@@ -90,15 +90,6 @@ No signal reaches execution without passing **all three gates**. This multi-laye
 
 Sentinel-X is designed to enforce **conservative, commonly requested sharia-oriented constraints**, but the repository does **not** self-issue a fatwa or claim universal scholarly certification:
 
-| Principle | Requirement | Implementation |
-|-----------|-------------|----------------|
-| **No Riba** | No interest | Spot only — zero leverage, zero margin, zero overnight fees |
-| **No Maysir** | No gambling | Every decision is rule-based and fully auditable |
-| **No Gharar** | No hidden risk | All entry/exit conditions are explicit and transparent |
-| **No Short Selling** | Long only | `can_short = False` enforced at strategy level |
-| **No Derivatives** | Spot only | `trading_mode: "spot"` — no futures, options, or perps |
-| **Asset Screening** | Conservative universe | Runtime guard allows only BTC/USDT and ETH/USDT |
-
 Runtime guardrails in `SentinelX` now refuse to start if any of the following drift from the conservative profile: `trading_mode != spot`, `margin_mode` is set, `can_short = True`, or the whitelist contains anything other than `BTC/USDT` and `ETH/USDT`.
 
 **Important:** whether crypto itself, stablecoin quotes, or exchange custody are halal is still a matter for your scholar, jurisdiction, and risk policy. The code can enforce conservative constraints; it cannot issue a binding religious ruling.
