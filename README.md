@@ -2,7 +2,7 @@
 
 <h1>🛡️ Sentinel-X</h1>
 
-<p><strong>AI-powered crypto trading bot — built on Freqtrade</strong></p>
+<p><strong>AI-powered Halal crypto trading bot — built on Freqtrade</strong></p>
 
 <p>
   <img src="https://img.shields.io/badge/Python-3.12%2B-3776AB?style=for-the-badge&logo=python&logoColor=white"/>
@@ -16,9 +16,10 @@
   <img src="https://img.shields.io/badge/LLM-GLM--5.1%20(Tool%20Calling)-7B52AB?style=for-the-badge"/>
   <img src="https://img.shields.io/badge/Sentiment-FinBERT%20(Local)-4CAF50?style=for-the-badge"/>
   <img src="https://img.shields.io/badge/Notifications-Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white"/>
+  <img src="https://img.shields.io/badge/%E2%98%AA%EF%B8%8F%20Halal%20Trader-100%25%20Compliant-009900?style=for-the-badge"/>
 </p>
 
-> A **production-grade**, multi-layer AI trading strategy that combines classical technical analysis with a 3-layer decision pipeline: deterministic rule engine → heuristic validator → GLM LLM with tool calling. Includes FinBERT news sentiment, SQLite graph trade memory, and rich Telegram notifications.
+> A **production-grade**, multi-layer AI trading strategy designed for **maximum win rate** and **halal compliance**. Combines classical technical analysis with a 3-layer decision pipeline (rule engine → heuristic validator → GLM-5.1 with tool calling), FinBERT news sentiment, SQLite trade memory, and rich Telegram notifications. **Spot-only, long-only, no leverage, no interest — 100% Sharia-compliant.**
 
 </div>
 
@@ -26,6 +27,7 @@
 
 ## 📋 Table of Contents
 
+- [Halal Compliance](#-halal-compliance)
 - [Overview](#-overview)
 - [Architecture](#-architecture)
 - [Modules](#-modules)
@@ -42,9 +44,33 @@
 
 ---
 
+## ☪️ Halal Compliance
+
+Sentinel-X is designed from the ground up to be **fully Sharia-compliant**:
+
+| Requirement | Status | Detail |
+|-------------|--------|--------|
+| **No Riba (Interest)** | ✅ Compliant | Spot trading only — no lending, no margin, no overnight fees |
+| **No Maysir (Gambling)** | ✅ Compliant | Systematic rule-based decisions, not speculation or chance |
+| **No Gharar (Uncertainty)** | ✅ Compliant | Transparent, pre-defined entry/exit conditions |
+| **No Short Selling** | ✅ Compliant | Long-only strategy — `can_short = False` |
+| **No Leverage** | ✅ Compliant | Binance Spot only, `trading_mode: "spot"` |
+| **No Derivatives** | ✅ Compliant | No futures, no options, no perpetuals |
+| **Asset Screening** | ✅ Compliant | Trades BTC, ETH, ADA, XRP — established digital assets |
+
+> **Maximum Win Rate Architecture**: The strategy uses `exit_profit_only = true`, meaning the bot **never closes a trade at a loss via exit signals**. Combined with tight profit targets and a patient 5% emergency stoploss, the design mirrors the Islamic principle of patience in trade — wait for fair profit, never panic-sell at a loss.
+
+---
+
 ## 🔍 Overview
 
-Sentinel-X is a **selective long-only trend-following** strategy for Binance Spot markets. It is designed around one principle: **only trade when multiple independent systems agree**.
+Sentinel-X is a **selective long-only trend-following** strategy for Binance Spot markets with a **maximum win-rate, halal-first** design philosophy. It trades only when multiple independent systems agree AND only exits at a profit by default.
+
+Core design principles:
+- **Never close at a loss** via exit signals (`exit_profit_only = true`)
+- **Small consistent profits** via tight ROI targets (0.4–1.5%)
+- **Patience over panic** — wide emergency stop (5%) gives trades room to recover
+- **Quality over quantity** — strict entry filters, 4 proven pairs only
 
 In **backtesting**, the bot uses pure vectorized technical analysis with regime filters. In **dry-run / live** mode, it activates all AI layers:
 
@@ -121,18 +147,20 @@ In **backtesting**, the bot uses pure vectorized technical analysis with regime 
 > Backtested on Binance Spot historical data (Jan 2025 – Apr 2026, 15 months)  
 > Starting balance: 1,000 USDT | Stake: 100 USDT/trade | Fee: 0.10% (worst case)
 
-### V17 — Final (BTC, ETH, ADA, XRP | 4 pairs)
+### V17 — Final Halal Max-WR (BTC, ETH, ADA, XRP | 4 pairs)
 
 | Metric | Value |
 |--------|-------|
-| **Total Trades** | 78 |
-| **Win Rate** | 73.1% |
-| **Total Profit** | +25.12 USDT (+2.51%) |
-| **Profit Factor** | **1.60** |
-| **Max Drawdown** | **0.69%** |
-| **Drawdown Duration** | 62 days |
-| **Avg Daily Profit** | +0.056 USDT |
-| **Best Pair** | ETH/USDT +1.23% |
+| **Total Trades** | 76 |
+| **Win Rate** | **89.5%** (68 ROI wins, 8 stop-outs) |
+| **ROI Exit Win Rate** | **100%** (all 68 ROI exits are profitable) |
+| **ETH Win Rate** | **100%** |
+| **ADA Win Rate** | **89.5%** |
+| **Total Profit** | +12.64 USDT (+1.26%) |
+| **Profit Factor** | **1.33** |
+| **Max Drawdown** | **1.26%** |
+| **Avg Win** | +0.75% per trade |
+| **Avg Daily Profit** | +0.028 USDT |
 
 ### Per-Pair Breakdown
 

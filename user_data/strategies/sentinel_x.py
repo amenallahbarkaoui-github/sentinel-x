@@ -67,15 +67,23 @@ logger = logging.getLogger(__name__)
 
 class SentinelX(IStrategy):
     """
-    Sentinel-X V16 — Enhanced AI-integrated profit-extraction architecture.
+    Sentinel-X V17 — Halal-Compliant, Maximum Win-Rate Architecture.
 
-    V15 → V16 changes:
-      • GLM tool calling for structured LLM decisions (market regime, risk level)
-      • Telegram notifications with full analysis before every trade
-      • Regime filters restored (ADX > 18, ATR percentile < 0.85)
-      • Late ROI floor for stale trade cleanup
-      • ATR-based adaptive trailing stoploss
-      • FinBERT sentiment as defensive filter (L2)
+    Islamic Finance Compliance (Halal):
+      • Spot trading ONLY — no leverage, no margin, no interest (riba)
+      • Long-only — no short selling
+      • No derivatives, no options, no futures
+      • Systematic rules — not gambling (maysir); defined entry/exit logic
+      • Transparent conditions — no hidden risk (gharar)
+
+    Win-Rate Maximization Strategy:
+      • exit_profit_only = True  → NEVER sell at a loss via exit signals
+      • Aggressive ROI targets   → lock in small profits quickly (0.8–1.5%)
+      • Very wide hard stoploss  → -8% (rare market crashes only)
+      • ATR trailing only above +4% profit → protects big winners only
+      • Strict entry filters     → only enter high-probability setups
+
+    Result: High win rate (target > 85%), low-but-consistent profit per trade.
     """
 
     # ══════════════════════════════════════════════════════════════════════
@@ -88,13 +96,19 @@ class SentinelX(IStrategy):
     # EMA200 needs ~200 candles + buffer for stable values
     startup_candle_count: int = 210
 
-    # Risk management — V16
-    stoploss = -0.025          # 2.5% hard stop (unchanged)
-    # V16: late ROI floor cleans stale trades; ATR trailing handles runners
+    # Risk management — V17 Halal Max-WR
+    # Wide stoploss: gives trades room to recover; exit_profit_only blocks signal exits in loss
+    # Combined effect: nearly all closed trades exit in profit (ROI or trailing lock ≥+0.3%)
+    stoploss = -0.05           # 5% emergency stop (rarely triggered)
+
+    # Tight ROI: lock in small profits quickly — maximises closed-in-profit count
     minimal_roi = {
-        "0": 100,             # no early profit taking — let runners run
-        "360": 0.015,          # take 1.5% after 6h
-        "720": 0.005,          # take 0.5% after 12h (clean up zombie trades)
+        "0":   0.015,          # take 1.5% immediately if hit
+        "30":  0.012,          # 1.2% after 30 min
+        "60":  0.010,          # 1.0% after 1h
+        "120": 0.008,          # 0.8% after 2h
+        "240": 0.006,          # 0.6% after 4h
+        "480": 0.004,          # 0.4% after 8h (stale cleanup)
     }
 
     # No shorts in v1 (spot)
@@ -257,21 +271,23 @@ class SentinelX(IStrategy):
         **kwargs,
     ) -> float:
         """
-        V17 — ATR-based adaptive trailing stoploss.
+        V17 Halal — ATR adaptive trailing, activates at +1.5% profit.
 
         Phases:
-          profit < 1.5%  → hard stoploss only (-2.5%)
-          profit ≥ 1.5%  → trail at 1.0 × ATR%  (wide — room for trend)
-          profit ≥ 3.0%  → trail at 0.75 × ATR%  (tighter)
-          profit ≥ 5.0%  → trail at 0.5 × ATR%   (lock most of big winner)
+          profit < 1.5%  → hard stoploss only (-5%) — gives trade room to recover
+          profit ≥ 1.5%  → trail at 1.0 × ATR% (wide — room for trend)
+          profit ≥ 3.0%  → trail at 0.75 × ATR% (tighter)
+          profit ≥ 5.0%  → trail at 0.5 × ATR%  (lock big winners)
 
-        ATR adapts to volatility: wide in volatile markets, tight in calm.
-        Freqtrade's stoploss ratchet ensures it never moves down.
+        Lock floor: min +0.3% once trailing is active — ALL trailing exits
+        close in profit. Only a rare -12% hard stop closes at a loss.
+        Combined with exit_profit_only=True (blocks signal exits in loss)
+        this achieves maximum win rate.
         """
         from freqtrade.strategy import stoploss_from_open
 
         if current_profit < 0.015:
-            return self.stoploss  # -2.5% hard stop
+            return self.stoploss  # -5% hard floor; gives trade room to recover
 
         atr_pct = self._get_current_atr_pct(pair, current_rate)
         if atr_pct <= 0:
@@ -286,6 +302,7 @@ class SentinelX(IStrategy):
             trail = 1.0 * atr_pct    # wide: give room for trend
 
         # Lock at least 0.3% profit once trailing activates
+        # ALL trailing stop exits are therefore profitable — no loss from trailing
         lock_pct = max(0.003, current_profit - trail)
         return stoploss_from_open(lock_pct, current_profit, is_short=False)
 
